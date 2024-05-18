@@ -12,7 +12,7 @@ https://github.com/sirireddy25/invigilation_duty_booking/assets/79968911/d93789f
 https://github.com/sirireddy25/invigilation_duty_booking/assets/79968911/16dee11b-d3f8-4e9f-83c6-44a0d56d52f6
 
 
-## Deployment
+## Usage
 
 Clone the repository:
 ```bash
