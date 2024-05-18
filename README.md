@@ -6,7 +6,10 @@ This web application provides a platform for administrators to manage exam sched
 
 
 ## Admin View
-![admin](https://github.com/sirireddy25/invigilation_duty_booking/assets/79968911/baf9f0fa-7417-40e0-bf15-3164a1d126aa)
+https://github.com/sirireddy25/invigilation_duty_booking/assets/79968911/d93789f1-5104-4192-9c6f-e2e653d93d05
+
+
+
 
 
 
