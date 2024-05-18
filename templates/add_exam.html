@@ -1,0 +1,40 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Add Exam{% endblock %}
+{% block add_exam_active %}active{% endblock %}
+
+{% block content %}
+    <h1>Add Exam</h1>
+    <form method="post" action="{% url 'add_exam' %}" class="custom-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .custom-form .form-control {
+            width: 300px;
+            box-sizing: border-box;
+            border-radius: 40px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .custom-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .custom-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{%block homeactive%}active{%endblock homeactive%}
+{% block title %}Exam Schedule{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    {% if x %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>One of the selected slots is clashing with a previously booked slot!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    <h1 class="mb-4">Exam Schedule</h1>
+
+    <form id="sort-form" method="GET" action="{% url 'exam_schedule' %}">
+        <div class="row justify-content-end mb-3">
+            <div class="col-auto">
+                <label for="sortBy" class="mr-2">Sort By:</label>
+                <div id="sortBy" class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sort_by" id="sortByDate" value="date">
+                    <label class="form-check-label" for="sortByDate">Date</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sort_by" id="sortBySemester" value="semester">
+                    <label class="form-check-label" for="sortBySemester">Semester</label>
+                </div>
+                <button type="submit" class="btn btn-secondary">Sort</button>
+            </div>
+        </div>
+    </form>
+
+    <form action="{% url 'exam_schedule' %}" method="POST">
+        {% csrf_token %}
+        <table class="table" id="exam-table">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Date</th>
+                    <th>Semester</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Room Number</th>
+                    <th>Status</th>
+                    <th>Book</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exam in exams %}
+                <tr>
+                    <td>{{ exam.exam }}</td>
+                    <td>{{ exam.date }}</td>
+                    <td>{{ exam.semester }}</td>
+                    <td>{{ exam.start_time }}</td>
+                    <td>{{ exam.end_time }}</td>
+                    <td>{{ exam.room_number }}</td>
+                    <td>
+                        {% if exam.booked %}
+                        <span class="badge bg-danger">Booked</span>
+                        {% else %}
+                        <span class="badge bg-success">Available</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not exam.booked %}
+                        <input type="checkbox" name="selected_slots" value="{{ exam.id }}">
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

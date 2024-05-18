@@ -1,0 +1,32 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}View Exams{% endblock %}
+{% block view_exams_active %}active{% endblock %}
+
+{% block content %}
+    <h1>View Exams</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Exam</th>
+                <th>Semester</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Room Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in exams %}
+                <tr>
+                    <td>{{ exam.exam }}</td>
+                    <td>{{ exam.semester }}</td>
+                    <td>{{ exam.date }}</td>
+                    <td>{{ exam.start_time }}</td>
+                    <td>{{ exam.end_time }}</td>
+                    <td>{{ exam.room_number }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

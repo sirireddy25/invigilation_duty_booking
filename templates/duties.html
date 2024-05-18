@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{%block dutiesactive%}active{%endblock dutiesactive%}
+{% block title %}Your Duties{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Your Duties</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Exam</th>
+                <th>Semester</th>
+                <th>Room Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if duties %}
+                {% for duty in duties %}
+                    <tr>
+                        <td>{{ duty.date }}</td>
+                        <td>{{ duty.start_time }}</td>
+                        <td>{{ duty.end_time }}</td>
+                        <td>{{ duty.exam }}</td>
+                        <td>{{ duty.semester }}</td>
+                        <td>{{ duty.room_number }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No duties assigned</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
