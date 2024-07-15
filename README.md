@@ -9,7 +9,7 @@ https://github.com/user-attachments/assets/773c2b3b-b6bb-4a6d-b35d-2645d8ada522
 
 
 ## Teacher View
-https://github.com/sirireddy25/invigilation_duty_booking/assets/79968911/16dee11b-d3f8-4e9f-83c6-44a0d56d52f6
+https://github.com/user-attachments/assets/7a9ab14c-f015-4715-b0ab-674f5fdffd2c
 
 
 ## Usage
