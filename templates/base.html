@@ -5,22 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color:  #ffffff; 
+        }
+        .navbar-custom {
+            background-color: #C19A6B;
+            border-radius: 10px; /* Slightly rounded corners */
+            padding: 10px 20px; /* Increase padding */
+            font-weight: 600; /* Thicker text */
+            box-shadow: 0 4px 8px rgb(92, 64, 51, 0.3);
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .navbar-custom .nav-link {
+            color: #6E260E; 
+            font-size: 18px;
+        }
+        .btn-custom {
+            background-color: rgb(193, 154, 107); 
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+        .btn-custom:hover {
+            background-color:  rgb(193, 154, 107, 0.5); 
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom mt-2">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item {%block homeactive%} {%endblock homeactive%}">
+                    <li class="nav-item {% block homeactive %} {% endblock homeactive %}">
                         <a class="nav-link" href="{% url 'exam_schedule' %}">Home</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item {%block dutiesactive%} {%endblock dutiesactive%}">
+                    <li class="nav-item {% block dutiesactive %} {% endblock dutiesactive %}">
                         <a class="nav-link" href="{% url 'duties' %}">Your Duties</a>
                     </li>
                 </ul>

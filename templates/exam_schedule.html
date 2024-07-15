@@ -1,80 +1,182 @@
 {% extends 'base.html' %}
-{%block homeactive%}active{%endblock homeactive%}
+{% block homeactive %}active{% endblock homeactive %}
 {% block title %}Exam Schedule{% endblock %}
 {% block content %}
 <div class="container mt-5">
     {% if x %}
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>One of the selected slots is clashing with a previously booked slot!</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true">&times;</span>
         </button>
-      </div>
+    </div>
     {% endif %}
 
-    <h1 class="mb-4">Exam Schedule</h1>
+    <h1 class="mb-4 text-center" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif; font-weight: bold;">
+        Exam Schedule
+    </h1>
 
-    <form id="sort-form" method="GET" action="{% url 'exam_schedule' %}">
-        <div class="row justify-content-end mb-3">
-            <div class="col-auto">
-                <label for="sortBy" class="mr-2">Sort By:</label>
+    <div class="progress-container text-center mb-4">
+        <h5 class="mb-3" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif; font-size: 18px;">
+            Duties Booking Progress
+            <span class="badge badge-info" style="background-color: #C6DCBA;">{{progress}}%</span>
+        </h5>
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"
+                style="width: {{progress}}%; background-color: #C6DCBA !important;"></div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <form id="sort-form" method="GET" action="{% url 'exam_schedule' %}" class="d-flex">
+            <div class="mr-3">
+                <label for="sortBy" class="mr-2" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif; font-size: 18px;">
+                    Sort By:
+                </label>
                 <div id="sortBy" class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="sort_by" id="sortByDate" value="date">
-                    <label class="form-check-label" for="sortByDate">Date</label>
+                    <label class="form-check-label" for="sortByDate" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif; font-size: 18px;">
+                        Date
+                    </label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="sort_by" id="sortBySemester" value="semester">
-                    <label class="form-check-label" for="sortBySemester">Semester</label>
+                    <label class="form-check-label" for="sortBySemester" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif; font-size: 18px;">
+                        Semester
+                    </label>
                 </div>
-                <button type="submit" class="btn btn-secondary">Sort</button>
             </div>
+            <button type="submit" class="btn btn-custom mr-3">Sort</button>
+        </form>
+
+        <div class="btn-group" role="group" aria-label="View Toggle">
+            <button type="button" class="btn btn-custom" id="cardViewButton">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button type="button" class="btn btn-custom" id="accordionViewButton">
+                <i class="fas fa-list"></i>
+            </button>
         </div>
-    </form>
+    </div>
 
     <form action="{% url 'exam_schedule' %}" method="POST">
         {% csrf_token %}
-        <table class="table" id="exam-table">
-            <thead>
-                <tr>
-                    <th>Exam</th>
-                    <th>Date</th>
-                    <th>Semester</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Room Number</th>
-                    <th>Status</th>
-                    <th>Book</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div id="cardView">
+            <div class="row">
                 {% for exam in exams %}
-                <tr>
-                    <td>{{ exam.exam }}</td>
-                    <td>{{ exam.date }}</td>
-                    <td>{{ exam.semester }}</td>
-                    <td>{{ exam.start_time }}</td>
-                    <td>{{ exam.end_time }}</td>
-                    <td>{{ exam.room_number }}</td>
-                    <td>
-                        {% if exam.booked %}
-                        <span class="badge bg-danger">Booked</span>
-                        {% else %}
-                        <span class="badge bg-success">Available</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not exam.booked %}
-                        <input type="checkbox" name="selected_slots" value="{{ exam.id }}">
-                        {% endif %}
-                    </td>
-                </tr>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card exam-card"
+                        style="background-color: rgba(249, 255, 186, 0.302); border: 1px solid rgba(221, 183, 87, 0.912); border-radius: 10px; transition: transform 0.2s, box-shadow 0.2s;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: rgb(92, 64, 51);">{{ exam.exam }}</h5>
+                            <p class="card-text" style="color: rgb(92, 64, 51);">
+                                <strong>Date:</strong> {{ exam.date }}<br>
+                                <strong>Semester:</strong> {{ exam.semester }}<br>
+                                <strong>Start Time:</strong> {{ exam.start_time }}<br>
+                                <strong>End Time:</strong> {{ exam.end_time }}<br>
+                                <strong>Room Number:</strong> {{ exam.room_number }}<br>
+                                <strong>Status:</strong>
+                                {% if exam.booked %}
+                                <span class="badge" style="background-color: rgba(243, 5, 29, 0.5);">Booked</span>
+                                {% else %}
+                                <span class="badge" style="background-color: rgba(49, 226, 91, 0.5);">Available</span>
+                                {% endif %}
+                            </p>
+                            {% if not exam.booked %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selected_slots"
+                                    value="{{ exam.id }}" id="exam{{ exam.id }}">
+                                <label class="form-check-label" for="exam{{ exam.id }}"
+                                    style="color: rgb(92, 64, 51);">Select</label>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <br>
+            </div>
+        </div>
+
+        <div id="accordionView" style="display: none;">
+            <div class="accordion" id="examAccordion">
+                {% for exam in exams %}
+                <div class="card exam-card"
+                    style="background-color: rgba(249, 255, 186, 0.3); border: 1px solid rgba(221, 183, 87, 0.912); border-radius: 10px; transition: transform 0.2s, box-shadow 0.2s;">
+                    <div class="card-header" id="heading{{ exam.id }}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse"
+                                data-target="#collapse{{ exam.id }}" aria-expanded="true"
+                                aria-controls="collapse{{ exam.id }}" style="color: rgb(92, 64, 51);">
+                                {{ exam.exam }} - {{ exam.date }}
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapse{{ exam.id }}" class="collapse" aria-labelledby="heading{{ exam.id }}"
+                        data-parent="#examAccordion">
+                        <div class="card-body">
+                            <p style="color: rgb(92, 64, 51);">
+                                <strong>Semester:</strong> {{ exam.semester }}<br>
+                                <strong>Start Time:</strong> {{ exam.start_time }}<br>
+                                <strong>End Time:</strong> {{ exam.end_time }}<br>
+                                <strong>Room Number:</strong> {{ exam.room_number }}<br>
+                                <strong>Status:</strong>
+                                {% if exam.booked %}
+                                <span class="badge" style="background-color: rgba(243, 5, 29, 0.3);">Booked</span>
+                                {% else %}
+                                <span class="badge" style="background-color: rgba(38, 239, 85, 0.3);">Available</span>
+                                {% endif %}
+                            </p>
+                            {% if not exam.booked %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selected_slots"
+                                    value="{{ exam.id }}" id="exam{{ exam.id }}">
+                                <label class="form-check-label" for="exam{{ exam.id }}"
+                                    style="color: rgb(92, 64, 51);">Select</label>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-custom mt-4">Submit</button>
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var cardViewButton = document.getElementById('cardViewButton');
+        var accordionViewButton = document.getElementById('accordionViewButton');
+        var cardView = document.getElementById('cardView');
+        var accordionView = document.getElementById('accordionView');
+
+        cardViewButton.addEventListener('click', function () {
+            cardView.style.display = 'block';
+            accordionView.style.display = 'none';
+        });
+
+        accordionViewButton.addEventListener('click', function () {
+            cardView.style.display = 'none';
+            accordionView.style.display = 'block';
+        });
+
+        // Add hover effect for cards
+        var examCards = document.querySelectorAll('.exam-card');
+        examCards.forEach(function (card) {
+            card.addEventListener('mouseover', function () {
+                card.style.transform = 'scale(1.05)';
+                card.style.boxShadow = '0 0 20px #C19A6B';
+            });
+            card.addEventListener('mouseout', function () {
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = '0 4px 8px rgba(255, 255, 255, 0.2)';
+            });
+        });
+    });
+</script>
 {% endblock %}

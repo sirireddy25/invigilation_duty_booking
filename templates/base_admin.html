@@ -5,9 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .navbar-custom {
+            background-color: #C19A6B;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(92, 64, 51, 0.3);
+        }
+        .navbar-custom .nav-link {
+            color: #6E260E;
+            font-size: 18px;
+        }
+        .btn-custom {
+            background-color: rgb(193, 154, 107);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-custom:hover {
+            background-color: rgba(193, 154, 107, 0.5);
+        }
+        .custom-form .form-control {
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+        .custom-form .form-group {
+            margin-bottom: 20px;
+        }
+        .custom-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: rgb(92, 64, 51);
+        }
+        .custom-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+        .custom-table thead th {
+            background-color: rgba(193, 154, 107, 0.9);
+            color: #fff;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+            padding: 10px;
+            text-align: left;
+        }
+        .custom-table tbody tr:nth-of-type(odd) {
+            background-color: rgba(249, 255, 186, 0.302);
+        }
+        .custom-table tbody tr:nth-of-type(even) {
+            background-color: #ffffff;
+        }
+        .custom-table th, .custom-table td {
+            color: rgb(92, 64, 51);
+            padding: 10px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+        .pagination-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination-link {
+            margin: 0 5px;
+            cursor: pointer;
+            color: rgb(92, 64, 51);
+            padding: 5px 10px;
+            text-decoration: none;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+            border-radius: 5px;
+        }
+        .pagination-link:hover {
+            background-color: rgba(193, 154, 107, 0.5);
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom mt-2">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -32,11 +125,13 @@
             </div>
         </div>
     </nav>
+    
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

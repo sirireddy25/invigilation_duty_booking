@@ -5,30 +5,26 @@ from .forms import SignUpForm, LoginForm, ExamForm, DateSemesterForm
 from .models import ExamSlot, Teacher
 
 def signup(request):
+    error = None
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             college_id = form.cleaned_data['college_id']
             password = form.cleaned_data['password']
-            # Check if the user already exists
             if User.objects.filter(username=college_id).exists():
-                # Handle case where user already exists
-                pass
+                error = "Username already exists"
             else:
-                # Create new user
-                
                 user = User.objects.create_user(username=college_id, password=password)
-                #user.is_staff = True 
                 user.save()
                 teacher = Teacher.objects.create(user=user)
-                # Log in the user
                 login(request, user)
                 return redirect('exam_schedule')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'signup.html', {'form': form, 'error': error})
 
 def user_login(request):
+    error = None
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -37,18 +33,15 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                
                 if user.is_superuser:
                     return redirect('add_exam')
-                # Redirect other users to the application's home page
                 else:
                     return redirect('exam_schedule')
             else:
-                # Authentication failed, handle error
-                pass
+                error = "Invalid username or password"
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'error': error})
 
 def logout_view(request):
     logout(request)
@@ -56,6 +49,13 @@ def logout_view(request):
 
 def exam_schedule(request):
     x = 0
+    teacher = request.user.teacher
+
+    num_duties = teacher.duties.all().count()
+    progress = (num_duties/4) * 100
+    if progress > 100:
+        progress = 100
+    
     sort_by = request.GET.get('sort_by', 'date')
     exams = ExamSlot.objects.all()
 
@@ -64,7 +64,7 @@ def exam_schedule(request):
             exams = exams.order_by('semester')
         else:
             exams = exams.order_by('date', 'start_time')
-        return render(request, 'exam_schedule.html', {'exams': exams, 'x': x})
+        return render(request, 'exam_schedule.html', {'exams': exams, 'x': x, 'progress':progress, 'num_duties':num_duties})
     
     elif request.method == 'POST':
         selected_slot_ids = request.POST.getlist('selected_slots')
@@ -78,7 +78,7 @@ def exam_schedule(request):
         
         if existing_bookings.exists():
            x = 1
-           return render(request, 'exam_schedule.html', {'exams': exams, 'x': x})
+           return render(request, 'exam_schedule.html', {'exams': exams, 'x': x, 'progress':progress, 'num_duties':num_duties})
         else:
             for slot in selected_slots:
                 slot.booked = True
@@ -88,22 +88,22 @@ def exam_schedule(request):
                 slot.save()
                 teacher.duties.add(slot)
                 teacher.save()
-            return render(request, 'exam_schedule.html', {'exams': exams, 'x': x})
+            return render(request, 'exam_schedule.html', {'exams': exams, 'x': x, 'progress':progress, 'num_duties':num_duties})
 
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def duties(request):
-    # Get the current user's teacher object
     teacher = request.user.teacher
+    duties = teacher.duties.all().order_by('date', 'start_time') if teacher else []
+    
+    # Debug print statement
+    print("Duties:", duties)
+    for duty in duties:
+        print(f"Duty: {duty.exam}, Date: {duty.date}, Start: {duty.start_time}, End: {duty.end_time}, Room: {duty.room_number}")
 
-    # Retrieve duties for the teacher
-    if teacher:
-        duties = teacher.duties.all()
-        duties = duties.order_by('date', 'start_time')
-    else:
-        duties = []
-
-    # Render the template with the duties
     return render(request, 'duties.html', {'duties': duties})
-
 
 #admin
 def add_exam(request):
@@ -122,6 +122,10 @@ def view_exams(request):
     return render(request, 'view_exams.html', {'exams': exams})
 
 
+from django.shortcuts import render
+from .models import ExamSlot
+from .forms import DateSemesterForm
+
 def view_teachers(request):
     if request.method == 'POST':
         form = DateSemesterForm(request.POST)
@@ -139,3 +143,4 @@ def view_teachers(request):
     else:
         form = DateSemesterForm()
     return render(request, 'view_teachers.html', {'form': form})
+

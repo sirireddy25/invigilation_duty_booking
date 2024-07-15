@@ -4,37 +4,87 @@
 {% block add_exam_active %}active{% endblock %}
 
 {% block content %}
-    <h1>Add Exam</h1>
-    <form method="post" action="{% url 'add_exam' %}" class="custom-form">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
-                {{ field }}
-            </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+    <div class="d-flex justify-content-center">
+        <div class="card p-4" style="width: 100%; max-width: 600px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: rgba(249, 255, 186, 0.302);">
+            <h1 class="mb-4 text-center" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif;">Add Exam</h1>
+            <form method="post" action="{% url 'add_exam' %}" class="custom-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="input-group">
+                            {% if field.name == "exam_name" %}
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-book"></i></span>
+                                </div>
+                            {% elif field.name == "exam_date" %}
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                </div>
+                            {% elif field.name == "start_time" %}
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                </div>
+                            {% elif field.name == "end_time" %}
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                </div>
+                            {% endif %}
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-custom w-100">Save</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_css %}
     <style>
         .custom-form .form-control {
-            width: 300px;
+            width: 100%;
             box-sizing: border-box;
-            border-radius: 40px;
+            border-radius: 10px;
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
         }
 
         .custom-form .form-group {
             margin-bottom: 20px;
+
         }
 
         .custom-form label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-weight: bold;
+            color: rgb(92, 64, 51);
+        }
+
+        .input-group-prepend .input-group-text {
+            background-color: #f9ffba;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+
+        .btn-custom {
+            background-color: rgb(193, 154, 107);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom:hover {
+            background-color: rgba(193, 154, 107, 0.5);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
         }
     </style>
 {% endblock %}

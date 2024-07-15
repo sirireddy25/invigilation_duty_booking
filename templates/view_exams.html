@@ -4,20 +4,25 @@
 {% block view_exams_active %}active{% endblock %}
 
 {% block content %}
-    <h1>View Exams</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Exam</th>
-                <th>Semester</th>
-                <th>Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Room Number</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for exam in exams %}
+<div class="container mt-5">
+    <h1 class="mb-4" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif;">View Exams</h1>
+
+    <input type="text" id="searchInput" onkeyup="searchAndPaginate()" placeholder="Search for exams.." class="form-control mb-4">
+
+    <div class="custom-table-container">
+        <table class="custom-table" id="examTable">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Semester</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Room Number</th>
+                </tr>
+            </thead>
+            <tbody id="examTableBody">
+                {% for exam in exams %}
                 <tr>
                     <td>{{ exam.exam }}</td>
                     <td>{{ exam.semester }}</td>
@@ -26,7 +31,83 @@
                     <td>{{ exam.end_time }}</td>
                     <td>{{ exam.room_number }}</td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination-container" class="pagination-container mt-3"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        searchAndPaginate(); // Initialize pagination on page load
+    });
+
+    function searchAndPaginate() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const table = document.getElementById("examTableBody");
+        const rows = table.getElementsByTagName("tr");
+
+        let filteredRows = [];
+
+        // Filter rows based on search input
+        for (let i = 0; i < rows.length; i++) {
+            const td = rows[i].getElementsByTagName("td");
+            let match = false;
+            for (let j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    const txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(input) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+            }
+            rows[i].style.display = match ? "" : "none";
+            if (match) {
+                filteredRows.push(rows[i]);
+            }
+        }
+
+        paginateTable(filteredRows); // Apply pagination to filtered rows
+    }
+
+    function paginateTable(filteredRows) {
+        const rowsPerPage = 10;
+        const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
+        const paginationContainer = document.getElementById("pagination-container");
+
+        // Clear previous pagination
+        paginationContainer.innerHTML = "";
+
+        // Create pagination links
+        for (let i = 1; i <= pageCount; i++) {
+            const pageLink = document.createElement("a");
+            pageLink.href = "#";
+            pageLink.innerHTML = i;
+            pageLink.classList.add("pagination-link");
+            pageLink.setAttribute("data-page", i);
+            pageLink.addEventListener("click", function(event) {
+                event.preventDefault();
+                const page = parseInt(this.getAttribute("data-page"));
+                showPage(filteredRows, page, rowsPerPage);
+            });
+            paginationContainer.appendChild(pageLink);
+        }
+
+        // Show the first page initially
+        showPage(filteredRows, 1, rowsPerPage);
+    }
+
+    function showPage(filteredRows, page, rowsPerPage) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        for (let i = 0; i < filteredRows.length; i++) {
+            filteredRows[i].style.display = (i >= start && i < end) ? "" : "none";
+        }
+    }
+</script>
 {% endblock %}

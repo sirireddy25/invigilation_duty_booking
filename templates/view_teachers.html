@@ -6,8 +6,8 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">View Teachers</h1>
-    <form method="POST" action="#">
+    <h1 class="mb-4" style="color: rgb(110, 38, 14, 0.6); font-family: 'Archivo Black', sans-serif;">View Teachers</h1>
+    <form method="POST" action="#" class="custom-form">
         {% csrf_token %}
         <div class="form-group">
             <label for="date">Date</label>
@@ -24,42 +24,135 @@
                 {% endfor %}
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-custom w-100">Submit</button>
     </form>
 
     {% if exam_slots %}
-    <h2 class="mt-5">Invigilation Slots: {{ selected_date }} - SEM {{ selected_semester }}</h2>
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Semester</th>
-                <th>Room Number</th>
-                <th>Subject</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Teacher</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for slot in exam_slots %}
-            <tr>
-                <td>{{ slot.date }}</td>
-                <td>{{ slot.semester }}</td>
-                <td>{{ slot.room_number }}</td>
-                <td>{{ slot.exam }}</td>
-                <td>{{ slot.start_time }}</td>
-                <td>{{ slot.end_time }}</td>
-                <td>
-                    {% for teacher in slot.teachers.all %}
-                    {{ teacher.user.username }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h2 class="mt-5" style="color: rgb(110, 38, 14, 0.6);">Invigilation Slots: {{ selected_date }} - SEM {{ selected_semester }}</h2>
+    <div class="custom-table-container">
+        <table class="custom-table" id="teacherTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Semester</th>
+                    <th>Room Number</th>
+                    <th>Subject</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Teacher</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in exam_slots %}
+                <tr>
+                    <td>{{ slot.date }}</td>
+                    <td>{{ slot.semester }}</td>
+                    <td>{{ slot.room_number }}</td>
+                    <td>{{ slot.exam }}</td>
+                    <td>{{ slot.start_time }}</td>
+                    <td>{{ slot.end_time }}</td>
+                    <td>
+                        {% if slot.teachers.exists %}
+                            {% for teacher in slot.teachers.all %}
+                                {{ teacher.user.username }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            No teachers assigned
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <button onclick="window.print()" class="btn btn-secondary mt-3">Print</button>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .custom-form .form-control {
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+
+        .custom-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .custom-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: rgb(92, 64, 51);
+        }
+
+        .btn-custom {
+            background-color: rgb(193, 154, 107);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom:hover {
+            background-color: rgba(193, 154, 107, 0.5);
+        }
+
+        .custom-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+
+        .custom-table thead th {
+            background-color: rgba(193, 154, 107, 0.9);
+            color: #fff;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .custom-table tbody tr:nth-of-type(odd) {
+            background-color: rgba(249, 255, 186, 0.302);
+        }
+
+        .custom-table tbody tr:nth-of-type(even) {
+            background-color: #ffffff;
+        }
+
+        .custom-table th, .custom-table td {
+            color: rgb(92, 64, 51);
+            padding: 10px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+
+        .btn-secondary {
+            background-color: rgb(110, 38, 14);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(110, 38, 14, 0.7);
+        }
+    </style>
 {% endblock %}

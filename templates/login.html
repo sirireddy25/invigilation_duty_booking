@@ -5,6 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .btn-custom {
+            background-color: rgb(193, 154, 107);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-custom:hover {
+            background-color: rgba(193, 154, 107, 0.5);
+        }
+        .custom-form .form-control {
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(221, 183, 87, 0.912);
+        }
+        .custom-form .form-group {
+            margin-bottom: 20px;
+        }
+        .custom-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: rgb(92, 64, 51);
+        }
+        .jumbotron {
+            background-color: #fff;
+            padding: 2rem 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .jumbotron .display-4 {
+            color: rgb(92, 64, 51);
+        }
+        .jumbotron p, .jumbotron a {
+            color: rgb(92, 64, 51);
+        }
+        .jumbotron a {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -13,12 +66,17 @@
                 <div class="jumbotron text-center">
                     <h1 class="display-4">Login</h1>
                     <br>
-                    <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <form method="post" class="custom-form">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="submit" class="btn btn-custom w-100">Login</button>
                     </form>
-                    <hr> 
+                    <hr>
                     <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
                 </div>
             </div>
@@ -26,4 +84,3 @@
     </div>
 </body>
 </html>
-
